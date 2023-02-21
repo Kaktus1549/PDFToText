@@ -5,6 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from sys import platform
 
 # Define the scopes for Gmail and Google Drive APIs
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.modify']
@@ -16,7 +17,10 @@ user_id = 'me'
 query = 'from:uctenky@smichoff.cz'
 
 # Define the directory to save attachments to
-save_dir = ' ../Photos_for_scan/'
+if platform == 'win' or 'win32' or 'win64':
+    save_dir = os.getcwd() + '\\Photos_for_scan\\'
+else:
+    save_dir = os.getcwd() + '/Photos_for_scan/'
 
 def main():
     # Get the API credentials from the token.json file
