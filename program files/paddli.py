@@ -1,36 +1,43 @@
+from asyncio.log import logger
+from types import NoneType
+from cv2 import log
 from paddleocr import PaddleOCR
 from sys import platform
 import traceback
 import os
 import shutil
-import re
+import logging
 
+#creating objects for OCR 
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
+
+#error handling
+error_logger = logging.getLogger('Error_logger')
+logger.setLevel(logging.ERROR)
+logging.basicConfig(level=logging.DEBUG, format='\nTime: %(asctime)s \nType of event: %(levelname)s \nError message: %(message)s')
+
+
+
 x = 0
 second_x = 0
 
 #getting platform info
 current_platform = platform.lower()
-
-#file paths for windows
 if current_platform == "windows" or current_platform == 'win32' or current_platform == 'win64':
-    error_log = os.getcwd() + '\\Error_log'
-    error_photos = os.getcwd() + '\\Errors'
-    fontik = os.getcwd() + '\\Font'
-    output = os.getcwd() + '\\Output'
-    photos_for_scan = os.getcwd() + '\\Photos_for_scan'
-    scanned = os.getcwd() + '\\Scaned'
-    prefixs = os.getcwd() + '\\prefixs\\'
-    
-#file path for linux
-if current_platform == "linux":
-    error_log = os.getcwd() + '/Error_log'
-    error_photos = os.getcwd() + '/Errors'
-    fontik = os.getcwd() + '/Font'
-    output = os.getcwd() + '/Output'
-    photos_for_scan = os.getcwd() + '/Photos_for_scan'
-    scanned = os.getcwd() + '/Scanned'
-    prefixs = '/prefixs/'
+    file_separrator = "\\"
+else:
+    file_separrator = "/"
+
+
+error_log = os.getcwd() + file_separrator + 'Error_log'
+error_photos = os.getcwd() + file_separrator + 'Errors'
+fontik = os.getcwd() + file_separrator + 'Font'
+output = os.getcwd() + file_separrator + 'Output'
+photos_for_scan = os.getcwd() + file_separrator + 'Photos_for_scan'
+scanned = os.getcwd() + file_separrator + 'Scaned'
+prefixs = os.getcwd() + file_separrator + 'prefixs' + file_separrator 
+
+
 
 #importing prefixs
 try:
@@ -57,10 +64,13 @@ while True:
     photos = os.listdir(photos_for_scan)
     i = i + 1
     file = "Content_" + str(i) + ".txt" 
+
     if photos:
-        imagee = photos_for_scan + '\\' + photos[0]
-        if current_platform == "windows" or current_platform == 'win32' or current_platform == 'win64':
+        try:
+            imagee = photos_for_scan + file_separrator  + photos[0]
             result = ocr.ocr(imagee)
+            
+            #PaddleOCR output has a lot of unnecessary information stored in multipel tuples in tuples
             with open(os.path.join(output, file), 'w') as save:
                 for line in result:
                     for object in line:
@@ -71,19 +81,41 @@ while True:
                                 if second_x %2:
                                     save.write(''.join(str(another_object)))
                                     save.write('\n')
-                        
-                        
-            print("Successfuly scanned and moved photo: " + photos[0])
-            shutil.move(photos_for_scan + '\\' + photos[0], scanned)
+                            
+                #after scan, picutre is moved into 'Scaned' folder            
+                print("Successfuly scanned and moved photo: " + photos[0])
+                shutil.move(photos_for_scan + file_separrator + photos[0], scanned)
+                photos.pop(0)
+                raise Exception('Something went wrong')
+
+        except Exception as error:
+            #getting name of error output
+            error_file = "error_log_" + str(e) + ".log"        
+            e = e + 1
+
+            #telling user something went wrong
+            print("An error appeared while reading the image: " + photos[0])
+            print("Moving photo into error file...")
+            
+            #moving picture into 'Errors' folder, so he can later rescan it
+            shutil.move(photos_for_scan + file_separrator + photos[0], error_photos)
+            
+            #creating error log
+            print("Creating error log...")
+            
+            with open(os.path.join(error_log, error_file ), 'w') as err:
+                err.write('Image name: ' + photos[0]) 
+                err.write('\nError log: ')
+            
+            file_handler = logging.FileHandler(error_log + file_separrator + error_file )
+            logger.addHandler(file_handler)
+            formatter = logging.Formatter('\n\n    Time: %(asctime)s \n    Logger Name: %(name)s \n    Logger type: %(levelname)s \n    Error message: %(message)s')
+            file_handler.setFormatter(formatter)
+            file_handler.setLevel(logging.ERROR)
+            logger.error(str(error))
+            
             photos.pop(0)
-        if current_platform == "linux":
-            result = ocr.ocr( imagee , det=False, cls=True)
-            with open(os.path.join(output, file), 'w') as save:
-                for line in result:
-                    save.write(','.join(str(line)))
-            print("Successfuly scanned and moved photo: " + photos[0])
-            shutil.move(photos_for_scan + '/' + photos[0], scanned)
-            photos.pop(0)
+
     if not photos:
         break
     
