@@ -1,9 +1,6 @@
 from asyncio.log import logger
-from types import NoneType
-from cv2 import log
 from paddleocr import PaddleOCR
 from sys import platform
-import traceback
 import os
 import shutil
 import logging
