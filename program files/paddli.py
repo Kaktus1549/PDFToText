@@ -83,7 +83,6 @@ while True:
                 print("Successfuly scanned and moved photo: " + photos[0])
                 shutil.move(photos_for_scan + file_separrator + photos[0], scanned)
                 photos.pop(0)
-                raise Exception('Something went wrong')
 
         except Exception as error:
             #getting name of error output
