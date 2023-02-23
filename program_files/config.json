@@ -1,0 +1,6 @@
+{
+    "email_address": "uctenky@smichoff.cz",         //Here use the credentials
+    "save_directory_windows": "\\Photos_for_scan\\",    //!! Advance change it only if you know what your doing  
+    "save_directory_linux": "/Photos_for_scan/",        //!! Leave the unused empty
+    "client_secret_file": "./client_secret.json"    
+}
