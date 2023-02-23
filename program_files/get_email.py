@@ -19,6 +19,7 @@ user_id = 'me'
 with open('config.json') as f:
     config = json.load(f)
 
+
 # Define a search query to find messages with attachments
 query = 'from:'+config['email_address']
 
@@ -26,10 +27,11 @@ query = 'from:'+config['email_address']
 # Define the directory to save attachments to
 if platform == 'win' or 'win32' or 'win64':
     save_dir = os.getcwd() + config['save_directory_windows']
+    #pwd = os.getcwd() + "/program files/"
+
 else:
     save_dir = os.getcwd() +config['save_directory_linux'] 
-
-pwd = os.getcwd() + "\\program files\\"
+    #pwd = os.getcwd() + "/program files/"
 
 def main():
     # Get the API credentials from the token.json file
@@ -42,8 +44,7 @@ def main():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-               pwd + 'client_secret.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', SCOPES)
             creds = flow.run_local_server(port=0)
         
         # Save the credentials for the next run
