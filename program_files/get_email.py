@@ -1,6 +1,7 @@
 import base64
 import os.path
 import os
+import json
 from urllib.request import Request
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -14,15 +15,19 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googlea
 
 # Set the user ID for the Gmail account
 user_id = 'me'
+#Config
+with open('config.json') as f:
+    config = json.load(f)
 
 # Define a search query to find messages with attachments
-query = 'from:uctenky@smichoff.cz'
+query = 'from:'+config['email_address']
+
 
 # Define the directory to save attachments to
 if platform == 'win' or 'win32' or 'win64':
-    save_dir = os.getcwd() + '\\Photos_for_scan\\'
+    save_dir = os.getcwd() + config['save_directory_windows']
 else:
-    save_dir = os.getcwd() + '/Photos_for_scan/'
+    save_dir = os.getcwd() +config['save_directory_linux'] 
 
 pwd = os.getcwd() + "\\program files\\"
 
