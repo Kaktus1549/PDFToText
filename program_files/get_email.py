@@ -8,6 +8,7 @@ from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from sys import platform
+from google.auth.transport.requests import Request 
 
 
 # Define the scopes for Gmail and Google Drive APIs
@@ -24,14 +25,17 @@ with open('config.json') as f:
 query = 'from:'+config['email_address']
 
 
+platform
 # Define the directory to save attachments to
 if platform == 'win' or 'win32' or 'win64':
     save_dir = os.getcwd() + config['save_directory_windows']
     #pwd = os.getcwd() + "/program files/"
 
-else:
+if platform =="linux":
     save_dir = os.getcwd() +config['save_directory_linux'] 
     #pwd = os.getcwd() + "/program files/"
+
+print(save_dir)
 
 def main():
     # Get the API credentials from the token.json file

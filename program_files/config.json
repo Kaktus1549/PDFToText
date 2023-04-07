@@ -1,6 +1,6 @@
 {
     "email_address": "uctenky@smichoff.cz",             
     "save_directory_windows": "\\Photos_for_scan\\",    
-    "save_directory_linux": "/Photos_for_scan/",       
-    "client_secret_file": "./client_secret.json"    
+    "save_directory_linux": "/../Photos_for_scan/",       
+    "client_secret_file": "./client_secret.json" 
 }
