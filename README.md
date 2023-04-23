@@ -1,4 +1,4 @@
-# Image To Text tool that uses your email as a source
+# PDF To Text tool that uses your email as a source
 ## How to get the client_secret.json ? 
 Go to the Google Developers Console. 
 Create a new project by clicking on the "Select a Project" dropdown at the top of the page and then clicking on the "New Project" button.
